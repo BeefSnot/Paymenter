@@ -68,6 +68,13 @@ class Settings
                     'accept' => ['image/*'],
                     'file_name' => 'logo.webp',
                 ],
+                [
+                    'name' => 'footer_credits',
+                    'label' => 'Footer Credits',
+                    'type' => 'text',
+                    'default' => '© Your Company Name',
+                    'required' => false,
+                ],
             ],
 
             // Security (captcha, rate limiting, etc.)
@@ -90,15 +97,14 @@ class Settings
                     'name' => 'captcha_site_key',
                     'label' => 'Captcha Site Key',
                     'type' => 'text',
-                    'required' => false,
+                    'required' => true,
                     'default' => '0x4AAAAAAAC-bTN5KkqiyxNM',
                 ],
                 [
-                    'name' => 'captcha_secret',
-                    'label' => 'Captcha Secret',
+                    'name' => 'captcha_secret_key',
+                    'label' => 'Captcha Secret Key',
                     'type' => 'text',
-                    'required' => false,
-                    'default' => '0x4AAAAAAAC-baD1IX6FMxXxEduRXcmCtuM',
+                    'required' => true,
                 ],
             ],
 

@@ -20,11 +20,8 @@ class Settings extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationGroup = 'Configuration';
-
     protected static ?string $title = 'Settings';
-
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-
     protected static string $view = 'admin.pages.settings';
 
     public ?array $data = [];
@@ -34,72 +31,57 @@ class Settings extends Page implements HasForms
         $setting_values = [];
         foreach (\App\Classes\Settings::settings() as $group => $settings) {
             foreach ($settings as $setting) {
-                $setting_values[$setting['name']] = config("settings.{$setting['name']}", $setting['default'] ?? null);
+                $setting_values[$setting['name']] = Setting::get($setting['name'], $setting['default']);
             }
         }
-
-        $this->form->fill($setting_values);
+        $this->data = $setting_values;
     }
 
-    public function form(Form $form): Form
+    protected function getFormSchema(): array
     {
-        $tabs = [];
-
-        foreach (ClassesSettings::settingsObject() as $key => $categories) {
-            $tab = Tabs\Tab::make($key)
-                ->label(ucwords(str_replace('-', ' ', $key)))
-                ->schema(function () use ($categories) {
-                    $inputs = [];
-                    foreach ($categories as $setting) {
-                        $inputs[] = FilamentInput::convert($setting);
-                    }
-
-                    return $inputs;
-                });
-
-            $tabs[] = $tab;
-        }
-
-        return $form
-            ->schema([
-                Tabs::make('Tabs')
-                    ->tabs($tabs)
-                    ->persistTabInQueryString(),
-            ])
-            ->statePath('data');
+        return [
+            Tabs::make('Settings')
+                ->tabs([
+                    Tabs\Tab::make('General')
+                        ->schema([
+                            FilamentInput::make('timezone')
+                                ->label('Timezone')
+                                ->options(\DateTimeZone::listIdentifiers(\DateTimeZone::ALL))
+                                ->required(),
+                            FilamentInput::make('app_language')
+                                ->label('App Language')
+                                ->options(glob(base_path('lang/*'), GLOB_ONLYDIR) ? array_map('basename', glob(base_path('lang/*'), GLOB_ONLYDIR)) : ['en'])
+                                ->required(),
+                            FilamentInput::make('app_url')
+                                ->label('App URL')
+                                ->url()
+                                ->required(),
+                            FilamentInput::make('theme')
+                                ->label('Theme')
+                                ->options(array_map('basename', glob(base_path('themes/*'), GLOB_ONLYDIR)))
+                                ->required(),
+                            FilamentInput::make('logo')
+                                ->label('Logo')
+                                ->file()
+                                ->accept(['image/*']),
+                            FilamentInput::make('footer_credits')
+                                ->label('Footer Credits')
+                                ->text()
+                                ->default('© Your Company Name'),
+                        ]),
+                    // Other tabs...
+                ]),
+        ];
     }
 
     public function save(): void
     {
-        Gate::authorize('has-permission', 'admin.settings.update');
-
-        $data = $this->form->getState();
-
-        foreach ($data as $key => $value) {
-            // Get only the settings that have changed
-            $avSetting = \App\Classes\Settings::getSetting($key);
-            if ($value !== $avSetting->value) {
-                $setting = Setting::where('settingable_type', null)->where('key', $key)->first();
-                if ($setting) {
-                    $setting->update([
-                        'value' => $value,
-                    ]);
-                } else {
-                    Setting::create([
-                        'key' => $key,
-                        'value' => $value,
-                        'settingable_type' => null,
-                        'type' => $avSetting->database_type ?? 'string',
-                        'encrypted' => $avSetting->encrypted ?? false,
-                    ]);
-                }
-            }
+        foreach ($this->data as $key => $value) {
+            Setting::set($key, $value);
         }
 
-        SettingsProvider::flushCache();
-
         Notification::make()
-            ->title('Saved successfully!')
+            ->title('Settings saved successfully.')
             ->success()
             ->send();
     }
