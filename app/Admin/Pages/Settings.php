@@ -69,6 +69,25 @@ class Settings extends Page implements HasForms
                                 ->text()
                                 ->default('© Your Company Name'),
                         ]),
+                    Tabs\Tab::make('Cronjob')
+                        ->schema([
+                            FilamentInput::make('cronjob_invoice')
+                                ->label('Send invoice if due date is x days away')
+                                ->numeric()
+                                ->required(),
+                            FilamentInput::make('cronjob_invoice_reminder')
+                                ->label('Send invoice reminder if due date is x days away')
+                                ->numeric()
+                                ->required(),
+                            FilamentInput::make('cronjob_cancel')
+                                ->label('Cancel order if pending for x days')
+                                ->numeric()
+                                ->required(),
+                            FilamentInput::make('queue_worker_enabled')
+                                ->label('Enable Queue Worker')
+                                ->checkbox()
+                                ->default(false),
+                        ]),
                     // Other tabs...
                 ]),
         ];

@@ -385,6 +385,12 @@ class Settings
                     'default' => 7,
                     'required' => true,
                 ],
+                [
+                    'name' => 'queue_worker_enabled',
+                    'label' => 'Enable Queue Worker',
+                    'type' => 'checkbox',
+                    'default' => false,
+                ],
             ],
             'other' => [
                 [
