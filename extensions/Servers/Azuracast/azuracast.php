@@ -57,7 +57,7 @@ class AzuraCast extends Server
         ])->$method($req_url, $data);
 
         if (!$response->successful()) {
-            throw new \Exception($response->json()['errors'][0]['detail']);
+            throw new \Exception('API request failed: ' . $response->body());
         }
 
         return $response->json() ?? [];
