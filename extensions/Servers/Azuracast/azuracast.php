@@ -4,7 +4,7 @@ namespace Paymenter\Extensions\Servers\AzuraCast;
 
 use App\Classes\Extension\Server;
 use App\Models\Service;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades.Http;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -67,7 +67,7 @@ class AzuraCast extends Server
     {
         $stations = $this->request('/api/stations');
         $stationList = [];
-        foreach ($stations['data'] as $station) {
+        foreach ($stations as $station) {
             $stationList[$station['id']] = $station['name'];
         }
 
@@ -106,7 +106,7 @@ class AzuraCast extends Server
         $settings = array_merge($settings, $properties);
 
         $orderUser = $service->order->user;
-        $user = $this->request('/api/users', 'get', ['filter' => ['email' => $orderUser->email]])['data'][0]['id'] ?? null;
+        $user = $this->request('/api/users', 'get', ['search' => $orderUser->email])[0]['id'] ?? null;
 
         if (!$user) {
             $user = $this->request('/api/users', 'post', [
