@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Paymenter\Extensions\Servers\AzuraCast\AzuraCast;
+use Paymenter\Extensions\Servers\Azuracast\Azuracast;
 
-Route::get('/azuracast/test', [AzuraCast::class, 'testConfig']);
+Route::get('/azuracast/test', [Azuracast::class, 'testConfig']);

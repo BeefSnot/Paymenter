@@ -1,6 +1,6 @@
 <?php
 
-namespace Paymenter\Extensions\Servers\AzuraCast;
+namespace Paymenter\Extensions\Servers\Azuracast;
 
 use App\Classes\Extension\Server;
 use App\Models\Service;
@@ -9,9 +9,9 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
- * Class AzuraCast
+ * Class Azuracast
  */
-class AzuraCast extends Server
+class Azuracast extends Server
 {
     public function getConfig($values = []): array
     {
